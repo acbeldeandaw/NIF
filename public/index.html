@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprobación NIF</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .content {
+            width: 300px;
+            margin: 10px auto;
+        }
+        
+        .content input {
+            width: 120px;
+            margin: 10px;
+            text-align: center;
+        }
+        
+        .content button {
+            width: 120px;
+        }
+        
+        .content p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="content">
+        <h1>Comprobación NIF</h1>
+        <input class="nif" type="text" pattern="[0-9]{8}[A-Za-z]{1}" maxlength="10" placeholder="00000000-X">
+        <button class="button">Comprobar</button>
+        <p class="result"></p>
+    </div>
+
+    <script>
+        $('.button').on('click', checkNif);
+
+        function checkNif() {
+            let nif = $('.nif').val();
+            let regExNif = /(^([0-9]{8,8}\-[A-Z]))$/
+            if (regExNif.test(nif)) {
+                fetch('/api', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            "nif": nif
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
+                        },
+                    })
+                    .then((response) => response.json())
+                    .then((json) => $('.result').text(json.result));
+            } else {
+                $('.result').text('Formato incorrecto');
+            }
+        }
+    </script>
+</body>
+
+</html>
